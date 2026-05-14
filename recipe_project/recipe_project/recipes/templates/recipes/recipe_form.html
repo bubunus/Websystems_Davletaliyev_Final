@@ -1,0 +1,57 @@
+{% extends 'recipes/base.html' %}
+{% block title %}{{ action }} Recipe - RecipeBook{% endblock %}
+{% block content %}
+<div class="container py-4" style="max-width: 800px;">
+    <h2 class="fw-bold mb-4"><i class="fas fa-{% if action == 'Create' %}plus{% else %}edit{% endif %} me-2 text-warning"></i>{{ action }} Recipe</h2>
+    <form method="post" id="recipeForm">
+        {% csrf_token %}
+        <div class="card mb-4">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-3">Recipe Details</h5>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Title</label>
+                    {{ form.title }}
+                    {% if form.title.errors %}<div class="text-danger small mt-1">{{ form.title.errors }}</div>{% endif %}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Description & Steps</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}<div class="text-danger small mt-1">{{ form.description.errors }}</div>{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-3"><i class="fas fa-mortar-pestle me-2 text-warning"></i>Ingredients</h5>
+                {{ formset.management_form }}
+                <div id="ingredient-list">
+                {% for iform in formset %}
+                <div class="ingredient-row mb-2">
+                    <div class="row g-2 align-items-center">
+                        <div class="col-5">{{ iform.name }}</div>
+                        <div class="col-4">{{ iform.quantity }}</div>
+                        <div class="col-3 d-flex gap-1 align-items-center">
+                            {% if iform.DELETE %}
+                            <div class="form-check">{{ iform.DELETE }}<label class="form-check-label text-danger small">Remove</label></div>
+                            {% endif %}
+                            {{ iform.id }}
+                        </div>
+                    </div>
+                    {% if iform.errors %}<div class="text-danger small">{{ iform.errors }}</div>{% endif %}
+                </div>
+                {% endfor %}
+                </div>
+                <small class="text-muted"><i class="fas fa-info-circle me-1"></i>Fill in as many ingredient rows as needed. Quantity is optional.</small>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary px-4">
+                <i class="fas fa-save me-2"></i>{{ action }} Recipe
+            </button>
+            <a href="{% if recipe %}{% url 'recipe_detail' recipe.pk %}{% else %}{% url 'recipe_list' %}{% endif %}" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

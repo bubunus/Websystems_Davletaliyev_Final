@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}RecipeBook{% endblock %}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f5f0; font-family: 'Segoe UI', sans-serif; }
+        .navbar { background: linear-gradient(135deg, #e67e22, #c0392b); }
+        .navbar-brand { font-weight: 700; font-size: 1.5rem; letter-spacing: 1px; }
+        .btn-primary { background-color: #e67e22; border-color: #e67e22; }
+        .btn-primary:hover { background-color: #c0392b; border-color: #c0392b; }
+        .card { border: none; box-shadow: 0 2px 12px rgba(0,0,0,.08); border-radius: 12px; }
+        .recipe-card:hover { transform: translateY(-3px); transition: .2s; box-shadow: 0 6px 20px rgba(0,0,0,.12); }
+        .badge-author { background-color: #fef3e2; color: #e67e22; border: 1px solid #f9c97a; }
+        .comment-box { background: #fff8f0; border-left: 4px solid #e67e22; border-radius: 0 8px 8px 0; }
+        .ingredient-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px dashed #e0d6cc; }
+        .ingredient-item:last-child { border-bottom: none; }
+        .page-hero { background: linear-gradient(135deg, #e67e22 0%, #c0392b 100%); color: white; padding: 2.5rem 0; margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand text-white" href="{% url 'recipe_list' %}"><i class="fas fa-utensils me-2"></i>RecipeBook</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <li class="nav-item"><a class="nav-link text-white" href="{% url 'recipe_list' %}"><i class="fas fa-book-open me-1"></i>All Recipes</a></li>
+                {% if user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link text-white" href="{% url 'my_recipes' %}"><i class="fas fa-bookmark me-1"></i>My Recipes</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="{% url 'recipe_create' %}"><i class="fas fa-plus me-1"></i>Add Recipe</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle me-1"></i>{{ user.username }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </li>
+                {% else %}
+                <li class="nav-item"><a class="nav-link text-white" href="{% url 'login' %}"><i class="fas fa-sign-in-alt me-1"></i>Login</a></li>
+                <li class="nav-item ms-lg-2"><a class="btn btn-light btn-sm px-3" href="{% url 'register' %}">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+</div>
+
+{% block content %}{% endblock %}
+
+<footer class="text-center text-muted py-4 mt-5 border-top">
+    <small><i class="fas fa-utensils me-1"></i> RecipeBook &copy; 2025 &mdash; Built with Django</small>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
